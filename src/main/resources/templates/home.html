@@ -6,19 +6,18 @@
 </head>
 <style>
     div {
-    text-align: center;
+    text-align: left;
     border: 1px solid black;
     }
 </style>
 <body>
-
-<h2>Login Success Page</h2>
+<h2>Home Page</h2>
 <div>
-    <p th:text="'As an User: ' + ${loginResponseObjectKey.userName}"/>
-</div>
-<br>
-<div style="text-align: right;border: none">
-    <a href="/home">Continue...</a>
+    <ul>
+        <li><a href="/create/customer">Manage Customers</a></li>
+        <li><a href="/update/login/history">Manage Login History</a></li>
+        <li><a href="/">Login Page</a></li>
+    </ul>
 </div>
 </body>
 </html>

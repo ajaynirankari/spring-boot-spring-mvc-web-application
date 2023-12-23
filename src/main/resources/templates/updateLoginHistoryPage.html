@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        div {
+        text-align: center;
+        border: 1px solid black;
+        }
+        table, th, td {
+                    border: 1px solid black;
+        }
+    </style>
+</head>
+<div style="text-align: right;border: none">
+    <a href="/home">Home</a>
+</div>
+<br>
+<body>
+<h2>Delete/Update Login History Page</h2>
+<div>
+    <form action="#" th:action="@{/delete/login}" method="post">
+        <table>
+            <tr>
+                <th><input type="submit" value="Delete"/></th>
+                <th>Id</th>
+                <th>User Name</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>&nbsp</th>
+            </tr>
+            <tr th:each="login: ${getAllLoginsByKey}">
+                <td><input type="checkbox" name="deleteLoginId" th:value="${login.id}"/></td>
+                <td th:text="${login.id}"/>
+                <td th:text="${login.userName}"/>
+                <td th:text="${login.status}"/>
+                <td th:text="${login.time}"/>
+                <td><a th:href="@{/logins/{id}(id=${login.id})}">Edit</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        div {
+        text-align: center;
+        border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: right;border: none">
+    <a href="/home">Home</a>
+</div>
+<br>
+<h2>Update Login Form</h2>
+<div>
+    <form method="post" action="#" th:action="@{/update/login/{id}(id=${loginRequestObjectKey.id})}" th:object="${loginRequestObjectKey}">
+
+        <p>UseName: <input type="text" th:field="*{userName}"/></p>
+        <p>Status: <input type="text" th:field="*{status}"/></p>
+        <p><input type="submit" value="Update Login"/></p>
+    </form>
+</div>
+</body>
+</html>
