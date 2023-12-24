@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ class WebController {
     public String createCustomer(@ModelAttribute Customer customer, Model model) {
         System.out.println("createCustomer called, customer = " + customer);
         customerRepo.save(customer);
-
+        model.addAttribute("message", "Customer record is save successfully !!");
         model.addAttribute("listAllCustomers", customerRepo.findAll());
         model.addAttribute("createCustomer", new Customer());
         model.addAttribute("updateCustomer", new Customer());
@@ -68,6 +69,7 @@ class WebController {
         System.out.println("deleteCustomer called, ids = " + ids);
         customerRepo.deleteAllById(ids);
 
+        model.addAttribute("message", "Customer ids (" + ids + ") are deleted successfully !!");
         model.addAttribute("listAllCustomers", customerRepo.findAll());
         model.addAttribute("createCustomer", new Customer());
         model.addAttribute("updateCustomer", new Customer());
@@ -102,6 +104,7 @@ class WebController {
             dbCustomer.setEmail(updatedCustomer.getEmail());
             dbCustomer.setAddress(updatedCustomer.getAddress());
             customerRepo.save(dbCustomer);
+            model.addAttribute("message", "Customer record is updated successfully !!");
         }
 
         model.addAttribute("listAllCustomers", customerRepo.findAll());
