@@ -4,12 +4,17 @@
     <title>Getting Started: Handling Form Submission</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div style="text-align: right;border: none">
     <a href="/home">Home</a>
 </div>
-<div th:if="${message}">
+<div th:if="${message}" style="text-align: center;border: none">
     [[${message}]]
 </div>
 <br>
@@ -19,35 +24,24 @@
             <form method="post" action="#" th:action="@{/create/customer}" th:object="${createCustomer}">
                 <fieldset>
                     <legend>Create New Customer</legend>
+
                     <label class="form-label">Name</label>
                     <input class="form-control" type="text" th:field="*{name}"/>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="error">Name Error</p>
+
                     <label class="form-label">Age</label>
                     <input class="form-control" type="text" th:field="*{age}"/>
+                    <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}" th:errorclass="error">Age Error</p>
+
                     <label class="form-label">Email</label>
                     <input class="form-control" type="text" th:field="*{email}"/>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" th:errorclass="error">Email Error</p>
+
                     <label class="form-label">Address</label>
                     <input class="form-control" type="text" th:field="*{address}"/>
+
                     <br>
                     <input class="btn btn-primary mb-3" type="submit" value="Submit"/>
-                </fieldset>
-            </form>
-        </td>
-        <td>
-
-            <form method="post" action="#" th:action="@{/update/customer}" th:object="${updateCustomer}">
-                <fieldset>
-                    <legend>Update Customer</legend>
-                    <input class="form-control" type="hidden" th:field="*{id}"/>
-                    <label class="form-label">Name</label>
-                    <input class="form-control" type="text" th:field="*{name}"/>
-                    <label class="form-label">Age</label>
-                    <input class="form-control" type="text" th:field="*{age}"/>
-                    <label class="form-label">Email</label>
-                    <input class="form-control" type="text" th:field="*{email}"/>
-                    <label class="form-label">Address</label>
-                    <input class="form-control" type="text" th:field="*{address}"/>
-                    <br>
-                    <input class="btn btn-primary mb-3" type="submit" value="Update"/>
                 </fieldset>
             </form>
         </td>
@@ -67,21 +61,48 @@
                         </tr>
                         <tr th:each="customer : ${listAllCustomers}">
                             <td style="text-align: center;"><input type="checkbox" name="checkedCustomer" th:value="${customer.id}"/></td>
-                            <td th:text="${customer.id}"></td>
-                            <td th:text="${customer.name}"></td>
+                            <td><a th:href="@{/update/customer/{id}(id=${customer.id})}" th:text="${customer.id}"></a></td>
+                            <td><a th:href="@{/update/customer/{id}(id=${customer.id})}" th:text="${customer.name}"></a></td>
                             <td th:text="${customer.age}"></td>
                             <td th:text="${customer.email}"></td>
                             <td th:text="${customer.address}"></td>
-                            <td><a class="btn btn-primary" th:href="@{/update/customer/{id}(id=${customer.id})}">Edit </a></td>
+                            <!--
+                            <td><a class="btn btn-primary" th:href="@{/update/customer/{id}(id=${customer.id})}">Edit</a></td>
+                            -->
                         </tr>
                     </table>
                 </fieldset>
             </form>
+        </td>
+        <td>
+            <form method="post" action="#" th:action="@{/update/customer}" th:object="${updateCustomer}">
+                <fieldset th:if="${updateCustomer.id &gt; 0}">
+                    <legend>Update Customer</legend>
 
+                    <input class="form-control" type="hidden" th:field="*{id}"/>
+
+                    <label class="form-label">Name</label>
+                    <input class="form-control" type="text" th:field="*{name}"/>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" th:errorclass="error">Name Error</p>
+
+                    <label class="form-label">Age</label>
+                    <input class="form-control" type="text" th:field="*{age}"/>
+                    <p th:if="${#fields.hasErrors('age')}" th:errors="*{age}" th:errorclass="error">Age Error</p>
+
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="text" th:field="*{email}"/>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" th:errorclass="error">Email Error</p>
+
+                    <label class="form-label">Address</label>
+                    <input class="form-control" type="text" th:field="*{address}"/>
+
+                    <br>
+                    <input class="btn btn-primary mb-3" type="submit" value="Update"/>
+                </fieldset>
+            </form>
         </td>
     </tr>
 </table>
 <br>
-
 </body>
 </html>

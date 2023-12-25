@@ -3,13 +3,21 @@ package com.gl.WebForm;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,12 +60,15 @@ class WebController {
     }
 
     @PostMapping("/create/customer")
-    public String createCustomer(@ModelAttribute Customer customer, Model model) {
-        System.out.println("createCustomer called, customer = " + customer);
-        customerRepo.save(customer);
-        model.addAttribute("message", "Customer record is save successfully !!");
+    public String createCustomer(@Valid @ModelAttribute("createCustomer") Customer customer, BindingResult errors, Model model) {
+        System.out.println("createCustomer called, customer = " + customer+", errors = "+errors);
+        if (!errors.hasErrors()) {
+            customerRepo.save(customer);
+            model.addAttribute("message", "Customer record is save successfully !!");
+            model.addAttribute("createCustomer", new Customer());
+        }
+
         model.addAttribute("listAllCustomers", customerRepo.findAll());
-        model.addAttribute("createCustomer", new Customer());
         model.addAttribute("updateCustomer", new Customer());
 
         return "customerPage";
@@ -94,22 +104,23 @@ class WebController {
     }
 
     @PostMapping("/update/customer")
-    public String updateCustomer(@ModelAttribute Customer updatedCustomer, Model model) {
-        System.out.println("updateCustomer called, updatedCustomer = " + updatedCustomer);
-        Optional<Customer> customerRepoById = customerRepo.findById(updatedCustomer.getId());
-        if (customerRepoById.isPresent()) {
-            Customer dbCustomer = customerRepoById.get();
-            dbCustomer.setName(updatedCustomer.getName());
-            dbCustomer.setAge(updatedCustomer.getAge());
-            dbCustomer.setEmail(updatedCustomer.getEmail());
-            dbCustomer.setAddress(updatedCustomer.getAddress());
-            customerRepo.save(dbCustomer);
-            model.addAttribute("message", "Customer record is updated successfully !!");
+    public String updateCustomer(@Valid @ModelAttribute("updateCustomer") Customer updatedCustomer, Errors errors, Model model) {
+        System.out.println("updateCustomer called, updatedCustomer = " + updatedCustomer+", errors = "+errors);
+        if(!errors.hasErrors()){
+            Optional<Customer> customerRepoById = customerRepo.findById(updatedCustomer.getId());
+            if (customerRepoById.isPresent()) {
+                Customer dbCustomer = customerRepoById.get();
+                dbCustomer.setName(updatedCustomer.getName());
+                dbCustomer.setAge(updatedCustomer.getAge());
+                dbCustomer.setEmail(updatedCustomer.getEmail());
+                dbCustomer.setAddress(updatedCustomer.getAddress());
+                customerRepo.save(dbCustomer);
+                model.addAttribute("message", "Customer record is updated successfully !!");
+            }
+            model.addAttribute("updateCustomer", new Customer());
         }
-
         model.addAttribute("listAllCustomers", customerRepo.findAll());
         model.addAttribute("createCustomer", new Customer());
-        model.addAttribute("updateCustomer", new Customer());
 
         return "customerPage";
     }
@@ -263,9 +274,20 @@ class Customer {
     @Id
     @GeneratedValue
     private long id;
+
+    @NotBlank(message = "name can not blank")
+    @Size(min = 3, max = 50)
     private String name;
+
+    @NotNull(message = "age can not null")
+    @Min(18)
+    @Max(75)
     private int age;
+
+    @NotBlank(message = "email can not blank")
+    @Email
     private String email;
+
     private String address;
 }
 
